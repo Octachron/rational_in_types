@@ -1,0 +1,35 @@
+OASISFormat: 0.4
+Name:        ℚ_types
+Version:     0.1
+Synopsis:    Rational arithmetic at type level library
+Authors:     Octachron
+License:     LGPL-3.0 with OCaml linking exception
+AlphaFeatures: ocamlbuild_more_args
+Plugins:     META (0.4), DevFiles (0.4)
+BuildTools: ocamlbuild
+XOCamlbuildExtraArgs: "-use-ocamlfind"
+
+Library "ℚ_types"
+  Path:    src
+  Modules: Natural, Logic_gates, Integer, Fraction, Binary
+
+Executable "basic_example"
+  Path: examples
+  MainIs: basic_example.ml
+  BuildDepends: ℚ_types
+  Install:false 
+  CompiledObject:Best
+
+Executable "test_integer"
+  Path: examples
+  MainIs: test_integer.ml
+  BuildDepends: ℚ_types
+  Install:false
+  CompiledObject:Best
+
+Executable "test_gates"
+  Path: examples
+  MainIs: test_gates.ml
+  BuildDepends: ℚ_types
+  Install:false
+  CompiledObject:Best
