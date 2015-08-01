@@ -18,3 +18,5 @@ let one =
 let m_seven =
   let a, b  = duplicate two in
   Ops.( ((a + one) * b + one ) * m_one )
+
+let overflow = Ops.( m_seven * two )

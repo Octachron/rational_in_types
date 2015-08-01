@@ -11,7 +11,7 @@ XOCamlbuildExtraArgs: "-use-ocamlfind"
 
 Library "ℚ_types"
   Path:    src
-  Modules: Natural, Logic_gates, Integer, Fraction, Binary
+  Modules: Natural, Logic_gates, Integer, Fraction
 
 Executable "basic_example"
   Path: examples

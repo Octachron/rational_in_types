@@ -1,199 +1,139 @@
-type 'a z = [ `_0 of 'a] * 'a
-type 'a o = [ `_1 of 'a] * 'a 
+module N = Natural
+open N
 
-type ('a,'b,'c_in, 'r, 'c_out) adder = Adder
+type 'a z = [ `_0 of 'a]
+type 'a o = [ `_1 of 'a]
+
+type ('a,'b,'c, 'r, 'c_out) adder = Adder
   (** Constraint on the inputs *)
   constraint
-    'a = 'ma * 'fa
+    'a = [< `_0 of 'b | `_1 of 'b ]
   constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa ]
+    'b = [< `_0 of 'c | `_1 of 'c ]
   constraint
-    'b = 'mb * 'fb
-  constraint
-    'mb = [< `_0 of 'fb | `_1 of 'fb ]
-  constraint
-    'c_in = 'mcin * 'fcin
-  constraint
-    'mcin = [< `_0 of 'fcin | `_1 of 'fcin ]
+    'c = [< `_0 of ( 'r*'c_out as 't) | `_1 of 't ] 
   (** Logic table of the adder gate *)
   constraint
     'table =
     [< `_0 of
          [< `_0 of
-              [< `_0 of [`_0 of 'r2 ] * [`_0 of 'c2] 
-              | `_1 of [`_1 of 'r2 ] *  [`_0 of 'c2] ]
+              [< `_0 of ('r2 z as 'r2_0) * ( 'c2 z as 'c2_0) 
+              | `_1 of ( 'r2 o as 'r2_1) *  'c2_0 ]
          | `_1 of
-              [< `_0 of [`_1 of 'r2 ] *  [`_0 of 'c2]
-              | `_1 of [`_0 of 'r2 ] *  [`_1 of 'c2] ]
+              [< `_0 of 'r2_1 *  'c2_0
+              | `_1 of 'r2_0 *  ('c2 o as 'c2_1) ]
          ]
     | `_1 of
          [< `_0 of
-              [< `_0 of [ `_1 of 'r2 ] * [`_0 of 'c2]
-              | `_1 of [ `_0 of 'r2 ] * [`_1 of 'c2] ]
+              [< `_0 of 'r2_1 * 'c2_0
+              | `_1 of 'r2_0 * 'c2_1 ]
          | `_1 of
-              [< `_0 of [ `_0 of 'r2 ] * [`_1 of 'c2]
-              | `_1 of [ `_1 of 'r2 ] * [`_1 of 'c2] ]
+              [< `_0 of 'r2_0 * 'c2_1
+              | `_1 of 'r2_1 * 'c2_1 ]
          ]
     ]
-  (** Assembling the argument *)
    constraint
-     'fa = 'mb
-   constraint
-     'fb = 'mcin
-   (** Unify the assembled argument with the result table  *)     
-   constraint
-     'table = 'ma
-   (** Grab the results exposed in 'fcin *)
-   constraint
-     'fcin = 'er * 'ec
-   (** Create the output *)
-   constraint
-     'r = 'er * 'r2
-   constraint
-     'c_out = 'ec * 'c2
+     'table = 'a
+
 
 type ('mult, 'b, 's) mult = Mult
   constraint
-    'mult = 'mp * 'fm
+    'mult = [< `_1 of 'b | `_0 of 'b ]
   constraint
-    'mp = [< `_1 of 'fm | `_0 of 'fm ]
-  constraint
-    'b = 'bp * 'fb
-  constraint
-    'bp = [< `_1 of 'fb | `_0 of 'fb ]
+    'b = [< `_1 of 's | `_0 of 's ]
   constraint
     'table = [< `_1 of
-                  [< `_1 of [`_1 of 'ss]
-                  |  `_0 of [`_0 of 'ss]  ]
+                  [< `_1 of 'ss o
+                  |  `_0 of ('ss z as 'o)  ]
              | `_0 of
-                  [< `_1 of [`_0 of 'ss]
-                  |  `_0 of [`_0 of 'ss]  ]
+                  [< `_1 of 'o
+                  |  `_0 of 'o]
              ]
   constraint
-    'fm = 'bp
-  constraint
-    'mp = 'table
-  constraint
-    's = 'fb * 'ss
+    'mult = 'table
 
 type ('a,'clone1,'clone2) cloner = Cloner
   constraint
-    'a = 'ma * 'fa
+    'a = [< `_0 of ( ('clone1 * 'clone2) as 't)  | `_1 of 't]
   constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa]
-  constraint
-    'table = [< `_0 of
-                  ( [`_0 of 'fcl1] * 'fcl1 )
-                  * ( [`_0 of 'fcl2] * 'fcl2 )
-             | `_1 of
-                  ( [`_1 of 'fcl1] * 'fcl1 )
-                  * ( [`_1 of 'fcl2] * 'fcl2 )
+    'table = [< `_0 of 'b z * ' c z 
+             | `_1 of 'b o * 'c o
              ]
   constraint
-    'ma = 'table
-  constraint
-    'clone1 * 'clone2 = 'fa
+    'a = 'table
 
 type ('a, 'clone1, 'clone2, 'clone3) cloner2 = Cloner2
   constraint
-    'a = 'ma * 'fa
+    'a = [< `_0 of ( ('clone1 * 'clone2 * 'clone3 ) as 't)  | `_1 of 't]
   constraint
     'ma = [< `_0 of 'fa | `_1 of 'fa]
   constraint
     'table = [<
-    |`_0 of ([ `_0 of 'f1] * 'f1) *([ `_0 of 'f2] * 'f2) * ([ `_0 of 'f3] * 'f3)
-    | `_1 of ([ `_1 of 'f1] * 'f1) *([ `_1 of 'f2] * 'f2) * ([ `_1 of 'f3] * 'f3)
+    |`_0 of 'b z * 'c z * 'd z
+    | `_1 of 'b o * 'c o * 'd o
   ]
   constraint
-    'ma = 'table
-  constraint
-    'clone1 * 'clone2 * 'clone3 = 'fa
+    'a = 'table
 
-
-type ('a,'b,'gor) g_or = Or
+type ('a,'b,'or_) or_ = Or
   constraint
-    'a = 'ma * 'fa
+    'a = [< `_0 of 'b | `_1 of 'b]
   constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa]
-  constraint
-    'b = 'mb * 'fb
-  constraint
-    'mb = [< `_0 of 'fb | `_1 of 'fb]
+    'b = [< `_0 of 'or_ | `_1 of 'or_]
   constraint
     'table =
     [<
       | `_0 of
         [<
-          |`_0 of [ `_0 of 'flor]
-          | `_1 of [ `_1 of 'flor]
+          |`_0 of 'c z
+          | `_1 of 'c o
         ]
       | `_1 of
         [<
-          |`_0 of [ `_1 of 'flor]
-          | `_1 of [ `_1 of 'flor]
+          |`_0 of 'c o
+          | `_1 of 'c o
         ]
     ]
   constraint
-  'fa = 'mb
-  constraint
-    'ma = 'table
-  constraint
-    'gor = 'fb * 'flor
+  'a = 'table
 
-type ('s1,'s2, 'c, 's, 'overflow) overflow = Overflow
+type ('a,'b, 'c, 's, 'overflow) overflow = Overflow
   constraint
-    's1 = 'ms1 * 'f1
+    'a = [< `_0 of 'b | `_1 of 'b]
   constraint
-    'ms1 = [< `_0 of 'f1 | `_1 of 'f1]
+    'b = [< `_0 of 'c | `_1 of 'c]
   constraint
-    's2 = 'ms2 * 'f2
-  constraint
-    'ms2 = [< `_0 of 'f2 | `_1 of 'f2]
-  constraint
-    'c = 'mc * 'fc
-  constraint
-    'mc = [< `_0 of 'fc | `_1 of 'fc]
+    'c = [< `_0 of ('s * 'overflow as 't) | `_1 of 't]
   constraint
     'table =
     [<
       | `_0 of
           [<
             |`_0 of [<
-                | `_0 of [ `_0 of 'fs] * [`_0 of 'fo]
-                | `_1 of [ `_1 of 'fs] * [`_1 of 'fo]
+                | `_0 of ('ts z * 'ov z as 'zz)
+                | `_1 of 'ts o * 'ov o
               ]
             | `_1 of ( [<
-                  | `_0 of [ `_1 of 'fs] * [`_0 of 'fo]
-                  | `_1 of [ `_0 of 'fs] * [`_0 of 'fo]
+                  | `_0 of ('ts o * 'ov z as 'oz)
+                  | `_1 of 'zz
                 ] as 'no_overflow )
           ]
       | `_1 of
           [<
             |`_0 of 'no_overflow
             | `_1 of [<
-                | `_0 of [ `_1 of 'fs] * [`_0 of 'fo]
-                | `_1 of [ `_0 of 'fs] * [`_1 of 'fo]
+                | `_0 of 'oz
+                | `_1 of 'ts z * 'ov o
               ]
           ]
     ]
   constraint
-  'f1 = 'ms2
-  constraint
-    'f2 = 'mc
-  constraint
-    'ms1 = 'table
-  constraint
-    'fc = 'ms * 'mo
-  constraint
-    's = 'ms * 'fs
-  constraint
-    'overflow = 'mo * 'fo
+    'a = 'table
+
 
 type ('a,'flip) flip = Flip
   constraint
-    'a = 'ma * 'fa
-  constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa]
+    'a = [< `_0 of 'flip | `_1 of 'flip]
   constraint
     'table =
     [<
@@ -201,36 +141,27 @@ type ('a,'flip) flip = Flip
       | `_1 of [ `_0 of 'f]
     ]
   constraint
-    'ma = 'table
-  constraint
-    'flip = 'fa * 'f
-
+    'a = 'table
 
 type ('control,'a,'b, 'eq ) eq_chain = Eqc
   (** Constraint on the inputs *)
   constraint
-    'a = 'ma * 'fa
+    'control = [< `_0 of 'a | `_1 of 'a ]
   constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa ]
+    'a = [< `_0 of 'b | `_1 of 'b ]
   constraint
-    'b = 'mb * 'fb
-  constraint
-    'mb = [< `_0 of 'fb | `_1 of 'fb ]
-  constraint
-    'control = 'mc * 'fc
-  constraint
-    'mc = [< `_0 of 'fc | `_1 of 'fc ]
-  (** Logic table of the adder gate *)
+    'b = [< `_0 of 'eq | `_1 of 'eq ]
+   (** Logic table *)
   constraint
     'table =
     [< `_0 of
          [< `_0 of (
-              [< `_0 of ( [`_0 of 'feq ] as 'z) 
+              [< `_0 of ( 'feq z  as 'z)
               | `_1 of 'z ] as 'z2)
          | `_1 of 'z2 ]
     | `_1 of
          [< `_0 of
-              [< `_0 of ([ `_1 of 'feq ] as 'o) 
+              [< `_0 of ( 'feq o as 'o) 
               | `_1 of 'z ]
          | `_1 of
               [< `_0 of 'z
@@ -239,12 +170,4 @@ type ('control,'a,'b, 'eq ) eq_chain = Eqc
     ]
   (** Assembling the argument *)
    constraint
-     'fc = 'ma
-   constraint
-     'fa = 'mb
-   (** Unify the assembled argument with the result table  *)     
-   constraint
-     'table = 'mc
-   (** Create the output *)
-   constraint
-     'eq = 'fb * 'feq
+     'control = 'table

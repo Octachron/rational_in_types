@@ -6,8 +6,6 @@ type +'a t = 'a N.t
     'a = < b0:'b0; b1:'b1; b2:'b2; s:'s; overflow:'o >
 
 type tautology = True
-type 'a z = [ `_0 of 'a] * 'a
-type 'a o = [ `_1 of 'a] * 'a 
 let assert_no_overflow : <overflow: 'any z; .. > t -> 'a t = fun n -> n 
 
 let z : < b0:'b0 z; b1:'b1 z; b2:'b2 z; s:'s z; overflow:'o z > t  = N.create 0
@@ -43,8 +41,8 @@ let add:
  * ('b1_0,'b1_1,'c1,'b1_2,'c2) adder
  * ('b2_0,'b2_1,'c2,'b2_2,'c3) adder
  * ('s0,'s1,'c3,'s2,'overflow) overflow
- * ('o0,'o1,'o01) g_or
- * ('o01,'overflow,'o2) g_or
+ * ('o0,'o1,'o01) or_
+ * ('o01,'overflow,'o2) or_
   -> < b0:'b0_0; b1: 'b1_0; b2: 'b2_0; s: 's0; overflow:'o0> t
   -> < b0:'b0_1; b1: 'b1_1; b2: 'b2_1; s: 's1; overflow:'o1> t
   -> < b0:'b0_2; b1: 'b1_2; b2: 'b2_2; s: 's2; overflow:'o2> t =
@@ -69,7 +67,7 @@ let m_one' = uminus one
 let minus a b = add a @@ uminus b  
 
 let lsl_1 :
-  ('o,'b2,'o2) L.g_or ->
+  ('o,'b2,'o2) L.or_ ->
   < b0:'b0; b1:'b1; b2:'b2; s:'s; overflow:'o > t ->
   < b0:'fresh z; b1:'b0; b2:'b1; s:'s; overflow:'o2 > t =
   fun _ x -> N.create @@ N.to_int x lsl 1  
@@ -154,7 +152,7 @@ let mult :
 
   * ('eq3,'o3) flip
 
-  * ('oa,'ob,'o4) g_or * ('o3, 'o4,'overflow) g_or
+  * ('oa,'ob,'o4) or_ * ('o3, 'o4,'overflow) or_
 
   -> < b0:'a0; b1:'a1; b2:'a2; s:'sa; overflow:'oa > t
   -> < b0:'b0; b1:'b1; b2:'b2; s:'sb; overflow:'ob > t
