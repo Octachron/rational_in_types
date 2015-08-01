@@ -42,3 +42,11 @@ let clone2: ('a,'b,'c,'d) cloner2 -> 'a N.t -> 'b N.t * 'c N.t * 'd N.t =
 
 let (o1,o2,o3) = clone2 Cloner2 zero
 
+let if_ :('a,'b,'c,'r) if_ -> 'a N.t -> 'b N.t -> 'c N.t -> 'r N.t =
+  fun _ a b c ->
+    let open N in
+    if to_int a = 0 then transmute b else transmute c
+
+let if_ a b = if_ If a b
+let z = if_ zero zero' one'
+let o = if_ one zero one'

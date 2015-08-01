@@ -1,5 +1,3 @@
-module N = Natural
-open N
 
 type 'a z = [ `_0 of 'a]
 type 'a o = [ `_1 of 'a]
@@ -52,6 +50,7 @@ type ('mult, 'b, 's) mult = Mult
   constraint
     'mult = 'table
 
+
 type ('a,'clone1,'clone2) cloner = Cloner
   constraint
     'a = [< `_0 of ( ('clone1 * 'clone2) as 't)  | `_1 of 't]
@@ -65,8 +64,6 @@ type ('a,'clone1,'clone2) cloner = Cloner
 type ('a, 'clone1, 'clone2, 'clone3) cloner2 = Cloner2
   constraint
     'a = [< `_0 of ( ('clone1 * 'clone2 * 'clone3 ) as 't)  | `_1 of 't]
-  constraint
-    'ma = [< `_0 of 'fa | `_1 of 'fa]
   constraint
     'table = [<
     |`_0 of 'b z * 'c z * 'd z
@@ -171,3 +168,7 @@ type ('control,'a,'b, 'eq ) eq_chain = Eqc
   (** Assembling the argument *)
    constraint
      'control = 'table
+
+type ('test,'a,'b,'r) if_ = If
+  constraint
+    'test = [< `_0 of 'a & 'r | `_1 of 'b & 'r]
