@@ -47,6 +47,7 @@ let if_ :('a,'b,'c,'r) if_ -> 'a N.t -> 'b N.t -> 'c N.t -> 'r N.t =
     let open N in
     if to_int a = 0 then transmute b else transmute c
 
+type exotic = Exotic
 let if_ a b = if_ If a b
-let z = if_ zero zero' one'
+let z = if_ zero (N.create 0: exotic N.t) one'
 let o = if_ one zero one'
