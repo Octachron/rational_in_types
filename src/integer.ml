@@ -81,3 +81,20 @@ let duplicate2:
   fun _ x -> N.(polytransmute.t x, polytransmute.t x, polytransmute.t x)    
 
 let duplicate2 x = duplicate2 (Cloner2,Cloner2,Cloner2,Cloner2,Cloner2) x
+
+let eq :
+  (    _ o, 'a0, 'b0, 'eq1) eq_chain * ( 'eq1 , 'a1, 'b1, 'eq2) eq_chain
+  * ( 'eq2, 'a2, 'b2, 'eq3) eq_chain * ( 'eq3 , 'a3, 'b3, 'eq4) eq_chain
+  -> <b0:'a0; b1:'a1; b2:'a2; s:'a3; overflow: _ L.z > t
+  -> <b0:'b0; b1:'b1; b2:'b2; s:'b3; overflow: _ L.z > t
+  -> 'eq4 N.t = fun _ x y ->
+  let open N in if to_int x= to_int y then create 0 else create 1 
+
+let eq x y = eq (Eqc,Eqc,Eqc,Eqc) x y
+
+let if_ :('a,'b,'c,'r) if_ -> 'a N.t -> 'b t -> 'c t -> 'r t =
+  fun _ a b c ->
+    let open N in
+    if to_int a = 0 then transmute b else transmute c
+        
+let if_ a b = if_ If a b

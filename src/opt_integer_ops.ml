@@ -1,7 +1,7 @@
 module N = Natural
 open Logic_gates
 open Integer
-    
+
 let add: < b0 : [< `_0 of
             [< `_0 of
                  ('b *

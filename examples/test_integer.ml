@@ -28,3 +28,8 @@ let m_seven =
   Ops.( ((a + one) * b + one ) * m_one )
 
 let overflow = Ops.( m_seven * two )
+
+let m_seven' = Ops.(uminus @@ two * (two'  + o1) + o2 )
+
+let test_eq =
+  eq two one  

@@ -33,3 +33,12 @@ Executable "test_gates"
   BuildDepends: ℚ_types
   Install:false
   CompiledObject:Best
+
+Executable "test_fraction"
+  Path: examples
+  MainIs: test_fraction.ml
+  BuildDepends: ℚ_types
+  Install:false
+  CompiledObject:Best
+
+
