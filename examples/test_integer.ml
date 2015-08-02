@@ -1,6 +1,7 @@
-open Handwritten_integer3_opt
+open Integer
+open Opt_integer_ops
 let (o1, o2, o3) = duplicate2 one
-    
+
 let two' = add o1 o2
 
 let z' = add m_one one
